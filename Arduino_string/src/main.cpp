@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <DFRobotDFPlayerMini.h>
+#include <DFPlayerMini_Fast.h>
 #include <MsTimer2.h>
 
 SoftwareSerial mp3Serial(10, 11);
-DFRobotDFPlayerMini myDFPlayer;
+DFPlayerMini_Fast myDFPlayer;
 
 
 /***** 디파인 *****/
@@ -27,14 +27,13 @@ int distance = 0; // 거리 전역변수.
 
 void measureLength() {
   digitalWrite(TRIG, LOW);
-  delayMicroseconds(3);
+  delayMicroseconds(2);
   digitalWrite(TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG, LOW);
 
   distance = pulseIn(ECHO, HIGH) * 34000 / 10000 / 2;
 
-  Serial.println(distance);
 }
 
 void setup() {
@@ -47,17 +46,11 @@ void setup() {
   pinMode(PLAYBUTTON, INPUT);
 
   // mp3 초기세팅
-  if (!myDFPlayer.begin(mp3Serial)) {  // mp3 소프트웨어 시리얼 테스트
-    Serial.println(F("Mp3 Module Error"));
-    while(true);
-  }
-  Serial.println("MP3 INIT DONE");
+  myDFPlayer.begin(mp3Serial, true);
 
   myDFPlayer.volume(30);                       // 볼륨 20
-  myDFPlayer.EQ(DFPLAYER_EQ_CLASSIC);          // 클래식 이퀄라이저
-  myDFPlayer.outputDevice(DFPLAYER_DEVICE_SD);
 
-  MsTimer2::set(100, measureLength);
+  MsTimer2::set(50, measureLength);
   MsTimer2::start();
 }
 
@@ -65,24 +58,16 @@ int instrumentCode = OBOE; // 기본악기는 오보에로
 
 int i = 1;
 
-void printDistance() {
-   if(i++ % 100 == 0) {
-    Serial.println(distance);
-    Serial.println("---");
-    i = 1;
-  }
-}
-
 int distanceCalc(int low, int high) {
   return (low <= distance && distance < high);
 }
 
 void loop() { 
 
-    printDistance();
-
     if(digitalRead(PLAYBUTTON)) // 버튼 누르면
     {
+
+      delay(10);
       if(1) { // 샾 플랫 안누름
         if(distanceCalc(0, 600)) {      
           myDFPlayer.loop(instrumentCode + DO);
@@ -115,7 +100,6 @@ void loop() {
         }
       }
     }
-
 }
 
 
