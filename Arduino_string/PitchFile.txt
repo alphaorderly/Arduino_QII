@@ -1,0 +1,34 @@
+
+// 악기 음정 mp3 파일 저장 규칙들
+
+// 오프셋 ( 악기 첫 번호 + 오프셋 = 음 )
+0 do   ( no flat for here )
+1 do - sharp / re - flat
+2 re
+3 re - sharp / mi - flat
+4 mi
+5 fa
+6 fa - sharp / sol - flat
+7 sol
+8 sol - sharp / la - flat
+9 la
+10 la - sharp / ti - flat
+11 ti
+
+--- 1 Octave ---
+
+12 HIGH do
+13 HIGH do - sharp / re - flat
+14 HIGH re
+15 HIGH re - sharp / mi - flat
+16 HIGH mi
+17 HIGH fa
+18 HIGH fa - sharp / sol - flat
+19 HIGH sol
+20 HIGH sol - sharp / la - flat
+21 HIGH la
+22 HIGH la - sharp / ti - flat
+23 HIGH ti  ( no sharp for here )
+
+// 악기
+OBOE 1 ~ 24
