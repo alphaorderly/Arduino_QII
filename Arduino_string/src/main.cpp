@@ -3,6 +3,7 @@
 #include <DFPlayerMini_Fast.h>
 #include <MsTimer2.h>
 
+
 SoftwareSerial mp3Serial(10, 11);
 DFPlayerMini_Fast myDFPlayer;
 
@@ -71,31 +72,31 @@ void loop() {
       if(1) { // 샾 플랫 안누름
         if(distanceCalc(0, 600)) {      
           myDFPlayer.loop(instrumentCode + DO);
-          while(digitalRead(PLAYBUTTON) && distanceCalc(0, 600));
+          while(digitalRead(PLAYBUTTON));
           myDFPlayer.stop();
         } else if (distanceCalc(600, 900)) {
           myDFPlayer.loop(instrumentCode + RE);
-          while(digitalRead(PLAYBUTTON) && distanceCalc(600, 900));
+          while(digitalRead(PLAYBUTTON));
           myDFPlayer.stop();
         } else if (distanceCalc(900, 1200)) {
           myDFPlayer.loop(instrumentCode + MI);
-          while(digitalRead(PLAYBUTTON) && distanceCalc(900, 1200));
+          while(digitalRead(PLAYBUTTON));
           myDFPlayer.stop();
         } else if (distanceCalc(1200, 1500)) {
           myDFPlayer.loop(instrumentCode + FA);
-          while(digitalRead(PLAYBUTTON) && distanceCalc(1200, 1500));
+          while(digitalRead(PLAYBUTTON));
           myDFPlayer.stop();
         } else if (distanceCalc(1500, 1800)) {
           myDFPlayer.loop(instrumentCode + SOL);
-          while(digitalRead(PLAYBUTTON) && distanceCalc(1500, 1800));
+          while(digitalRead(PLAYBUTTON));
           myDFPlayer.stop();
         } else if (distanceCalc(1800, 2100)) {
           myDFPlayer.loop(instrumentCode + LA);
-          while(digitalRead(PLAYBUTTON) && distanceCalc(1800, 2100));
+          while(digitalRead(PLAYBUTTON));
           myDFPlayer.stop();
         } else if (distanceCalc(2100, 2400)) {
           myDFPlayer.loop(instrumentCode + TI);
-          while(digitalRead(PLAYBUTTON) && distanceCalc(2100, 2400));
+          while(digitalRead(PLAYBUTTON));
           myDFPlayer.stop();
         }
       }
