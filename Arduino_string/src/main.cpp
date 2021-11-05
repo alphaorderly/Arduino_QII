@@ -1,9 +1,15 @@
 #include <Arduino.h>
 
+/***** DEFINE *****/
+#define SPEAKER     3
+#define ECHO        5
+#define TRIG        4
+
 void setup() {
-  // put your setup code here, to run once:
+  // PINMODE
+  pinMode(SPEAKER, OUTPUT);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  
 }
