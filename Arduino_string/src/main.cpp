@@ -57,7 +57,6 @@ void setup() {
 
 instrument instrumentCode = OBOE; // 기본악기는 오보에로
 
-int i = 1;
 
 int distanceCalc(int low, int high) {
   return (low <= distance && distance < high);
