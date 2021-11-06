@@ -28,7 +28,7 @@ int distance = 0; // 거리 전역변수.
 
 void measureLength() {
   digitalWrite(TRIG, LOW);
-  delayMicroseconds(2);
+  delayMicroseconds(3);
   digitalWrite(TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG, LOW);
@@ -63,44 +63,36 @@ int distanceCalc(int low, int high) {
   return (low <= distance && distance < high);
 }
 
+void playTune(instrument inst, pitch p) {
+  myDFPlayer.loop(inst + p);
+  while(digitalRead(PLAYBUTTON));
+  myDFPlayer.stop();
+}
+
 void loop() { 
 
     if(digitalRead(PLAYBUTTON)) // 버튼 누르면
     {
-
-      delay(10);
+      delay(15);
       if(1) { // 샾 플랫 안누름
-        if(distanceCalc(0, 600)) {      
-          myDFPlayer.loop(instrumentCode + DO);
-          while(digitalRead(PLAYBUTTON));
-          myDFPlayer.stop();
+        if(distanceCalc(0, 600)) {
+          playTune(OBOE, DO);
         } else if (distanceCalc(600, 900)) {
-          myDFPlayer.loop(instrumentCode + RE);
-          while(digitalRead(PLAYBUTTON));
-          myDFPlayer.stop();
+          playTune(OBOE, RE);
         } else if (distanceCalc(900, 1200)) {
-          myDFPlayer.loop(instrumentCode + MI);
-          while(digitalRead(PLAYBUTTON));
-          myDFPlayer.stop();
+          playTune(OBOE, MI);
         } else if (distanceCalc(1200, 1500)) {
-          myDFPlayer.loop(instrumentCode + FA);
-          while(digitalRead(PLAYBUTTON));
-          myDFPlayer.stop();
+          playTune(OBOE, FA);
         } else if (distanceCalc(1500, 1800)) {
-          myDFPlayer.loop(instrumentCode + SOL);
-          while(digitalRead(PLAYBUTTON));
-          myDFPlayer.stop();
+          playTune(OBOE, SOL);
         } else if (distanceCalc(1800, 2100)) {
-          myDFPlayer.loop(instrumentCode + LA);
-          while(digitalRead(PLAYBUTTON));
-          myDFPlayer.stop();
+          playTune(OBOE, LA);
         } else if (distanceCalc(2100, 2400)) {
-          myDFPlayer.loop(instrumentCode + TI);
-          while(digitalRead(PLAYBUTTON));
-          myDFPlayer.stop();
+          playTune(OBOE, TI);
         }
       }
     }
+
 }
 
 
