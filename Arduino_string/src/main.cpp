@@ -55,7 +55,7 @@ void setup() {
   MsTimer2::start();
 }
 
-int instrumentCode = OBOE; // 기본악기는 오보에로
+instrument instrumentCode = OBOE; // 기본악기는 오보에로
 
 int i = 1;
 
@@ -76,19 +76,19 @@ void loop() {
       delay(15);
       if(1) { // 샾 플랫 안누름
         if(distanceCalc(0, 600)) {
-          playTune(OBOE, DO);
+          playTune(instrumentCode, DO);
         } else if (distanceCalc(600, 900)) {
-          playTune(OBOE, RE);
+          playTune(instrumentCode, RE);
         } else if (distanceCalc(900, 1200)) {
-          playTune(OBOE, MI);
+          playTune(instrumentCode, MI);
         } else if (distanceCalc(1200, 1500)) {
-          playTune(OBOE, FA);
+          playTune(instrumentCode, FA);
         } else if (distanceCalc(1500, 1800)) {
-          playTune(OBOE, SOL);
+          playTune(instrumentCode, SOL);
         } else if (distanceCalc(1800, 2100)) {
-          playTune(OBOE, LA);
+          playTune(instrumentCode, LA);
         } else if (distanceCalc(2100, 2400)) {
-          playTune(OBOE, TI);
+          playTune(instrumentCode, TI);
         }
       }
     }
