@@ -15,7 +15,9 @@ int distance;
 #define PLAYBUTTON  12
 
 enum instrument {  // 악기 변경용
-  OBOE = 1
+  OBOE = 1,
+  FLUTE = 25,
+  TRUMPET = 49
 };
 
 enum pitch {       // 음정 변경용
