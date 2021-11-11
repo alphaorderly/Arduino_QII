@@ -33,3 +33,5 @@
 // 악기
 OBOE 1 ~ 24
 FLUTE 25 ~ 48
+TRUMPET 49 ~ 72
+VIOLIN 73 ~ 96
