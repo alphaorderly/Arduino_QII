@@ -2,7 +2,9 @@
 #include <SoftwareSerial.h>
 #include <DFPlayerMini_Fast.h>
 #include <Adafruit_VL53L0X.h>
+#include <LiquidCrystal_I2C.h>
 
+LiquidCrystal_I2C lcd(0x27,16,2);
 
 SoftwareSerial mp3Serial(10, 11);
 DFPlayerMini_Fast myDFPlayer;
@@ -10,6 +12,7 @@ Adafruit_VL53L0X TOF = Adafruit_VL53L0X();
 VL53L0X_RangingMeasurementData_t measure;
 
 int distance;
+
 
 /***** 디파인 *****/
 #define PLAYBUTTON  12
@@ -40,11 +43,14 @@ void setup() {
   }
 
   // 핀모드
-  pinMode(PLAYBUTTON, INPUT);
+  pinMode(PLAYBUTTON, INPUT_PULLUP);
   pinMode(SHARP, INPUT_PULLUP);
   pinMode(FLAT, INPUT_PULLUP);
   pinMode(INST_ONE, INPUT_PULLUP);
   pinMode(INST_TWO, INPUT_PULLUP);
+
+  lcd.begin(16, 2);
+  lcd.backlight();
 
   // mp3 초기세팅
   myDFPlayer.begin(mp3Serial, true);
@@ -61,120 +67,198 @@ int distanceCalc(int low, int high) {
 void playTune(instrument inst, pitch p) {
   myDFPlayer.loop(inst + p);
   Serial.println(inst + p);
-  while(digitalRead(PLAYBUTTON));
+  while(!digitalRead(PLAYBUTTON) && digitalRead(SHARP) && digitalRead(FLAT));
   myDFPlayer.stop();
 }
 
 void playSharpTune(instrument inst, pitch p) {
   myDFPlayer.loop(inst + p);
-  while(digitalRead(PLAYBUTTON));
+  while(!digitalRead(PLAYBUTTON) && !digitalRead(SHARP) && digitalRead(FLAT));
   myDFPlayer.stop();
 }
 
 void playFlatTune(instrument inst, pitch p) {
   myDFPlayer.loop(inst + p);
-  while(digitalRead(PLAYBUTTON));
+  while(!digitalRead(PLAYBUTTON) && digitalRead(SHARP) && !digitalRead(FLAT));
   myDFPlayer.stop();
 }
 
 void loop() { 
 
-    if(digitalRead(PLAYBUTTON)) // 버튼 누르면
+  int inst = !digitalRead(INST_ONE) * 2 + !digitalRead(INST_TWO);
+  switch(inst) {
+    case 0:
+      instrumentCode = OBOE;
+      break;
+    case 1:
+      instrumentCode = FLUTE;
+      break;
+    case 2:
+      instrumentCode = TRUMPET;
+      break;
+    case 3:
+      instrumentCode = VIOLIN;
+      break;
+  }
+
+    if(!digitalRead(PLAYBUTTON)) // 버튼 누르면
     {
       distance = TOF.readRange();
       Serial.println(distance);
-      if(1) { // 샾 플랫 안누름
+      lcd.setCursor(0, 0);
+      switch(instrumentCode) {
+        case OBOE:
+          lcd.print("OBOE");
+          break;
+        case FLUTE:
+          lcd.print("FLUTE");
+          break;
+        case TRUMPET:
+          lcd.print("TRUMPET");
+          break;
+        case VIOLIN:
+          lcd.print("VIOLIN");
+          break;
+      }
+
+      lcd.setCursor(0, 1);
+
+      if(digitalRead(SHARP) && digitalRead(FLAT)) { // 샾 플랫 안누름
         if(distanceCalc(0, 40)) {
+          lcd.print("DO");
           playTune(instrumentCode, DO);
         } else if (distanceCalc(40, 60)) {
+          lcd.print("RE");
           playTune(instrumentCode, RE);
         } else if (distanceCalc(60, 80)) {
+          lcd.print("MI");
           playTune(instrumentCode, MI);
         } else if (distanceCalc(80, 100)) {
+          lcd.print("FA");
           playTune(instrumentCode, FA);
         } else if (distanceCalc(100, 120)) {
+          lcd.print("SOL");
           playTune(instrumentCode, SOL);
         } else if (distanceCalc(120, 140)) {
+          lcd.print("LA");
           playTune(instrumentCode, LA);
         } else if (distanceCalc(140, 160)) {
+          lcd.print("TI");
           playTune(instrumentCode, TI);
         } else if (distanceCalc(160, 180)) {
+          lcd.print("HIGH DO");
           playTune(instrumentCode, HIGH_DO);
         } else if (distanceCalc(180, 200)) {
+          lcd.print("HIGH RE");
           playTune(instrumentCode, HIGH_RE);
         } else if (distanceCalc(200, 220)) {
+          lcd.print("HIGH MI");
           playTune(instrumentCode, HIGH_MI);
         } else if (distanceCalc(220, 240)) {
+          lcd.print("HIGH FA");
           playTune(instrumentCode, HIGH_FA);
         } else if (distanceCalc(240, 260)) {
+          lcd.print("HIGH SOL");
           playTune(instrumentCode, HIGH_SOL);
         } else if (distanceCalc(260, 280)) {
+          lcd.print("HIGH LA");
           playTune(instrumentCode, HIGH_LA);
         } else if (distanceCalc(280, 300)) {
+          lcd.print("HIGH TI");
           playTune(instrumentCode, HIGH_TI);
         }
       } else if (!digitalRead(SHARP) && digitalRead(FLAT)) { // 샾버튼
           if(distanceCalc(0, 40)) {
-          playTune(instrumentCode, DO);
+          lcd.print("DO SHARP");
+          playSharpTune(instrumentCode, DO_SHARP);
         } else if (distanceCalc(40, 60)) {
-          playTune(instrumentCode, RE);
+          lcd.print("RE SHARP");
+          playSharpTune(instrumentCode, RE_SHARP);
         } else if (distanceCalc(60, 80)) {
-          playTune(instrumentCode, MI);
+          lcd.print("FA");
+          playSharpTune(instrumentCode, FA);
         } else if (distanceCalc(80, 100)) {
-          playTune(instrumentCode, FA);
+          lcd.print("FA SHARP");
+          playSharpTune(instrumentCode, FA_SHARP);
         } else if (distanceCalc(100, 120)) {
-          playTune(instrumentCode, SOL);
+          lcd.print("SOL SHARP");
+          playSharpTune(instrumentCode, SOL_SHARP);
         } else if (distanceCalc(120, 140)) {
-          playTune(instrumentCode, LA);
+          lcd.print("LA SHARP");
+          playSharpTune(instrumentCode, LA_SHARP);
         } else if (distanceCalc(140, 160)) {
-          playTune(instrumentCode, TI);
+          lcd.print("HIGH DO");
+          playSharpTune(instrumentCode, HIGH_DO);
         } else if (distanceCalc(160, 180)) {
-          playTune(instrumentCode, HIGH_DO);
+          lcd.print("HIGH DO SHARP");
+          playSharpTune(instrumentCode, HIGH_DO_SHARP);
         } else if (distanceCalc(180, 200)) {
-          playTune(instrumentCode, HIGH_RE);
+          lcd.print("HIGH RE SHARP");
+          playSharpTune(instrumentCode, HIGH_RE_SHARP);
         } else if (distanceCalc(200, 220)) {
-          playTune(instrumentCode, HIGH_MI);
+          lcd.print("HIGH FA");
+          playSharpTune(instrumentCode, HIGH_FA);
         } else if (distanceCalc(220, 240)) {
-          playTune(instrumentCode, HIGH_FA);
+          lcd.print("HIGH FA SHARP");
+          playSharpTune(instrumentCode, HIGH_FA_SHARP);
         } else if (distanceCalc(240, 260)) {
-          playTune(instrumentCode, HIGH_SOL);
+          lcd.print("HIGH SOL SHARP");
+          playSharpTune(instrumentCode, HIGH_SOL_SHARP);
         } else if (distanceCalc(260, 280)) {
-          playTune(instrumentCode, HIGH_LA);
+          lcd.print("HIGH LA SHARP");
+          playSharpTune(instrumentCode, HIGH_LA_SHARP);
         } else if (distanceCalc(280, 300)) {
-          playTune(instrumentCode, HIGH_TI);
+          lcd.print("HIGH TI");
+          playSharpTune(instrumentCode, HIGH_TI);
         }
       } else if (digitalRead(SHARP) && !digitalRead(FLAT)) { // 플랫버튼
           if(distanceCalc(0, 40)) {
-          playTune(instrumentCode, DO);
+          lcd.print("DO");
+          playFlatTune(instrumentCode, DO);
         } else if (distanceCalc(40, 60)) {
-          playTune(instrumentCode, RE);
+          lcd.print("DO SHARP");
+          playFlatTune(instrumentCode, DO_SHARP);
         } else if (distanceCalc(60, 80)) {
-          playTune(instrumentCode, MI);
+          lcd.print("RE SHARP");
+          playFlatTune(instrumentCode, RE_SHARP);
         } else if (distanceCalc(80, 100)) {
-          playTune(instrumentCode, FA);
+          lcd.print("MI");
+          playFlatTune(instrumentCode, MI);
         } else if (distanceCalc(100, 120)) {
-          playTune(instrumentCode, SOL);
+          lcd.print("FA SHARP");
+          playFlatTune(instrumentCode, FA_SHARP);
         } else if (distanceCalc(120, 140)) {
-          playTune(instrumentCode, LA);
+          lcd.print("SOL SHARP");
+          playFlatTune(instrumentCode, SOL_SHARP);
         } else if (distanceCalc(140, 160)) {
-          playTune(instrumentCode, TI);
+          lcd.print("LA SHARP");
+          playFlatTune(instrumentCode, LA_SHARP);
         } else if (distanceCalc(160, 180)) {
-          playTune(instrumentCode, HIGH_DO);
+          lcd.print("TI");
+          playFlatTune(instrumentCode, TI);
         } else if (distanceCalc(180, 200)) {
-          playTune(instrumentCode, HIGH_RE);
+          lcd.print("HIGH DO SHARP");
+          playFlatTune(instrumentCode, HIGH_DO_SHARP);
         } else if (distanceCalc(200, 220)) {
-          playTune(instrumentCode, HIGH_MI);
+          lcd.print("HIGH RE SHARP");
+          playFlatTune(instrumentCode, HIGH_RE_SHARP);
         } else if (distanceCalc(220, 240)) {
-          playTune(instrumentCode, HIGH_FA);
+          lcd.print("HIGH MI");
+          playFlatTune(instrumentCode, HIGH_MI);
         } else if (distanceCalc(240, 260)) {
-          playTune(instrumentCode, HIGH_SOL);
+          lcd.print("HIGH FA SHARP");
+          playFlatTune(instrumentCode, HIGH_FA_SHARP);
         } else if (distanceCalc(260, 280)) {
-          playTune(instrumentCode, HIGH_LA);
+          lcd.print("HIGH SOL SHARP");
+          playFlatTune(instrumentCode, HIGH_SOL_SHARP);
         } else if (distanceCalc(280, 300)) {
-          playTune(instrumentCode, HIGH_TI);
+          lcd.print("HIGH LA SHARP");
+          playFlatTune(instrumentCode, HIGH_LA_SHARP);
         }
       }
+      lcd.clear();
     }
+    lcd.clear();
   }
 
 
