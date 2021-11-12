@@ -41,10 +41,10 @@ void setup() {
 
   // 핀모드
   pinMode(PLAYBUTTON, INPUT);
-  pinMode(SHARP, INPUT);
-  pinMode(FLAT, INPUT);
-  pinMode(INST_ONE, INPUT);
-  pinMode(INST_TWO, INPUT);
+  pinMode(SHARP, INPUT_PULLUP);
+  pinMode(FLAT, INPUT_PULLUP);
+  pinMode(INST_ONE, INPUT_PULLUP);
+  pinMode(INST_TWO, INPUT_PULLUP);
 
   // mp3 초기세팅
   myDFPlayer.begin(mp3Serial, true);
@@ -60,121 +60,118 @@ int distanceCalc(int low, int high) {
 
 void playTune(instrument inst, pitch p) {
   myDFPlayer.loop(inst + p);
+  Serial.println(inst + p);
+  while(digitalRead(PLAYBUTTON));
+  myDFPlayer.stop();
+}
+
+void playSharpTune(instrument inst, pitch p) {
+  myDFPlayer.loop(inst + p);
+  while(digitalRead(PLAYBUTTON));
+  myDFPlayer.stop();
+}
+
+void playFlatTune(instrument inst, pitch p) {
+  myDFPlayer.loop(inst + p);
   while(digitalRead(PLAYBUTTON));
   myDFPlayer.stop();
 }
 
 void loop() { 
 
-  int INST = digitalRead(INST_ONE) * 2 + digitalRead(INST_TWO);
-  switch(INST) {
-    case 0:
-      instrumentCode = OBOE;
-      break;
-    case 1: 
-      instrumentCode = FLUTE;
-      break;
-    case 2:
-      instrumentCode = TRUMPET;
-      break;
-    case 3:
-      instrumentCode = VIOLIN;
-      break;
-  }
-
     if(digitalRead(PLAYBUTTON)) // 버튼 누르면
     {
       distance = TOF.readRange();
       Serial.println(distance);
-      if(!digitalRead(SHARP) && !digitalRead(FLAT)) { // 샾 플랫 안누름
-        if(distanceCalc(0, 60)) {
+      if(1) { // 샾 플랫 안누름
+        if(distanceCalc(0, 40)) {
           playTune(instrumentCode, DO);
-        } else if (distanceCalc(60, 90)) {
+        } else if (distanceCalc(40, 60)) {
           playTune(instrumentCode, RE);
-        } else if (distanceCalc(90, 120)) {
+        } else if (distanceCalc(60, 80)) {
           playTune(instrumentCode, MI);
-        } else if (distanceCalc(120, 150)) {
+        } else if (distanceCalc(80, 100)) {
           playTune(instrumentCode, FA);
-        } else if (distanceCalc(150, 180)) {
+        } else if (distanceCalc(100, 120)) {
           playTune(instrumentCode, SOL);
-        } else if (distanceCalc(180, 210)) {
+        } else if (distanceCalc(120, 140)) {
           playTune(instrumentCode, LA);
-        } else if (distanceCalc(210, 240)) {
+        } else if (distanceCalc(140, 160)) {
           playTune(instrumentCode, TI);
-        } else if (distanceCalc(240, 270)) {
+        } else if (distanceCalc(160, 180)) {
           playTune(instrumentCode, HIGH_DO);
-        } else if (distanceCalc(270, 300)) {
+        } else if (distanceCalc(180, 200)) {
           playTune(instrumentCode, HIGH_RE);
-        } else if (distanceCalc(300, 330)) {
+        } else if (distanceCalc(200, 220)) {
           playTune(instrumentCode, HIGH_MI);
-        } else if (distanceCalc(330, 360)) {
+        } else if (distanceCalc(220, 240)) {
           playTune(instrumentCode, HIGH_FA);
-        } else if (distanceCalc(360, 390)) {
+        } else if (distanceCalc(240, 260)) {
           playTune(instrumentCode, HIGH_SOL);
-        } else if (distanceCalc(390, 420)) {
+        } else if (distanceCalc(260, 280)) {
           playTune(instrumentCode, HIGH_LA);
-        } else if (distanceCalc(420, 450)) {
+        } else if (distanceCalc(280, 300)) {
           playTune(instrumentCode, HIGH_TI);
         }
-      } else if (digitalRead(SHARP) && !digitalRead(FLAT)) { // 샾버튼
-          if(distanceCalc(0, 60)) {
-          playTune(instrumentCode, DO_SHARP);
-        } else if (distanceCalc(60, 90)) {
-          playTune(instrumentCode, RE_SHARP);
-        } else if (distanceCalc(90, 120)) {
-          playTune(instrumentCode, FA);
-        } else if (distanceCalc(120, 150)) {
-          playTune(instrumentCode, FA_SHARP);
-        } else if (distanceCalc(150, 180)) {
-          playTune(instrumentCode, SOL_SHARP);
-        } else if (distanceCalc(180, 210)) {
-          playTune(instrumentCode, LA_SHARP);
-        } else if (distanceCalc(210, 240)) {
+      } else if (!digitalRead(SHARP) && digitalRead(FLAT)) { // 샾버튼
+          if(distanceCalc(0, 40)) {
           playTune(instrumentCode, DO);
-        } else if (distanceCalc(240, 270)) {
-          playTune(instrumentCode, HIGH_DO_SHARP);
-        } else if (distanceCalc(270, 300)) {
-          playTune(instrumentCode, HIGH_RE_SHARP);
-        } else if (distanceCalc(300, 330)) {
-          playTune(instrumentCode, HIGH_FA);
-        } else if (distanceCalc(330, 360)) {
-          playTune(instrumentCode, HIGH_FA_SHARP);
-        } else if (distanceCalc(360, 390)) {
-          playTune(instrumentCode, HIGH_SOL_SHARP);
-        } else if (distanceCalc(390, 420)) {
-          playTune(instrumentCode, HIGH_LA_SHARP);
-        } else if (distanceCalc(420, 450)) {
-          playTune(instrumentCode, HIGH_TI);
-        } 
-      } else if (!digitalRead(SHARP) && digitalRead(FLAT)) { // 플랫버튼
-          if(distanceCalc(0, 60)) {
-          playTune(instrumentCode, DO);
-        } else if (distanceCalc(60, 90)) {
-          playTune(instrumentCode, DO_SHARP);
-        } else if (distanceCalc(90, 120)) {
-          playTune(instrumentCode, RE_SHARP);
-        } else if (distanceCalc(120, 150)) {
+        } else if (distanceCalc(40, 60)) {
+          playTune(instrumentCode, RE);
+        } else if (distanceCalc(60, 80)) {
           playTune(instrumentCode, MI);
-        } else if (distanceCalc(150, 180)) {
-          playTune(instrumentCode, FA_SHARP);
-        } else if (distanceCalc(180, 210)) {
-          playTune(instrumentCode, SOL_SHARP);
-        } else if (distanceCalc(210, 240)) {
-          playTune(instrumentCode, LA_SHARP);
-        } else if (distanceCalc(240, 270)) {
+        } else if (distanceCalc(80, 100)) {
+          playTune(instrumentCode, FA);
+        } else if (distanceCalc(100, 120)) {
+          playTune(instrumentCode, SOL);
+        } else if (distanceCalc(120, 140)) {
+          playTune(instrumentCode, LA);
+        } else if (distanceCalc(140, 160)) {
           playTune(instrumentCode, TI);
-        } else if (distanceCalc(270, 300)) {
-          playTune(instrumentCode, HIGH_DO_SHARP);
-        } else if (distanceCalc(300, 330)) {
-          playTune(instrumentCode, HIGH_RE_SHARP);
-        } else if (distanceCalc(330, 360)) {
+        } else if (distanceCalc(160, 180)) {
+          playTune(instrumentCode, HIGH_DO);
+        } else if (distanceCalc(180, 200)) {
+          playTune(instrumentCode, HIGH_RE);
+        } else if (distanceCalc(200, 220)) {
           playTune(instrumentCode, HIGH_MI);
-        } else if (distanceCalc(360, 390)) {
-          playTune(instrumentCode, HIGH_FA_SHARP);
-        } else if (distanceCalc(390, 420)) {
-          playTune(instrumentCode, HIGH_SOL_SHARP);
-        } else if (distanceCalc(420, 450)) {
-          playTune(instrumentCode, HIGH_LA_SHARP);
+        } else if (distanceCalc(220, 240)) {
+          playTune(instrumentCode, HIGH_FA);
+        } else if (distanceCalc(240, 260)) {
+          playTune(instrumentCode, HIGH_SOL);
+        } else if (distanceCalc(260, 280)) {
+          playTune(instrumentCode, HIGH_LA);
+        } else if (distanceCalc(280, 300)) {
+          playTune(instrumentCode, HIGH_TI);
+        }
+      } else if (digitalRead(SHARP) && !digitalRead(FLAT)) { // 플랫버튼
+          if(distanceCalc(0, 40)) {
+          playTune(instrumentCode, DO);
+        } else if (distanceCalc(40, 60)) {
+          playTune(instrumentCode, RE);
+        } else if (distanceCalc(60, 80)) {
+          playTune(instrumentCode, MI);
+        } else if (distanceCalc(80, 100)) {
+          playTune(instrumentCode, FA);
+        } else if (distanceCalc(100, 120)) {
+          playTune(instrumentCode, SOL);
+        } else if (distanceCalc(120, 140)) {
+          playTune(instrumentCode, LA);
+        } else if (distanceCalc(140, 160)) {
+          playTune(instrumentCode, TI);
+        } else if (distanceCalc(160, 180)) {
+          playTune(instrumentCode, HIGH_DO);
+        } else if (distanceCalc(180, 200)) {
+          playTune(instrumentCode, HIGH_RE);
+        } else if (distanceCalc(200, 220)) {
+          playTune(instrumentCode, HIGH_MI);
+        } else if (distanceCalc(220, 240)) {
+          playTune(instrumentCode, HIGH_FA);
+        } else if (distanceCalc(240, 260)) {
+          playTune(instrumentCode, HIGH_SOL);
+        } else if (distanceCalc(260, 280)) {
+          playTune(instrumentCode, HIGH_LA);
+        } else if (distanceCalc(280, 300)) {
+          playTune(instrumentCode, HIGH_TI);
         }
       }
     }
