@@ -14,7 +14,7 @@ VL53L0X_RangingMeasurementData_t measure;
 int distance;
 
 
-/***** 디파인 *****/
+/***** DEFINE *****/
 #define PLAYBUTTON  12
 #define SHARP       8
 #define FLAT        9
@@ -23,19 +23,21 @@ int distance;
 
 #define CHECKDURATION 25
 
-enum instrument {  // 악기 변경용
+enum instrument {  // INSTRUMENTS
   OBOE = 1,
   FLUTE = 25,
   TRUMPET = 49, 
   VIOLIN = 73
 };
 
-enum pitch {       // 음정 변경용
+enum pitch {       // PITCHES
   DO, DO_SHARP, RE, RE_SHARP, MI, FA, FA_SHARP, SOL, SOL_SHARP, LA, LA_SHARP, TI, 
   HIGH_DO, HIGH_DO_SHARP, HIGH_RE, HIGH_RE_SHARP, HIGH_MI, HIGH_FA, HIGH_FA_SHARP, HIGH_SOL, HIGH_SOL_SHARP, HIGH_LA, HIGH_LA_SHARP, HIGH_TI
 };
 
 void setup() {
+
+  //  SETUP SERIAL
   mp3Serial.begin(9600);
   Serial.begin(115200);
 
@@ -44,7 +46,7 @@ void setup() {
     while(1);
   }
 
-  // 핀모드
+  // PINMODE FOR BUTTONS ( THEY ALL USE INPUT_PULLUP )
   pinMode(PLAYBUTTON, INPUT_PULLUP);
   pinMode(SHARP, INPUT_PULLUP);
   pinMode(FLAT, INPUT_PULLUP);
@@ -54,18 +56,18 @@ void setup() {
   lcd.begin(16, 2);
   lcd.backlight();
 
-  // mp3 초기세팅
+  // INITIALIZIING MP3, change volume value if you want
   myDFPlayer.begin(mp3Serial, true);
-  myDFPlayer.volume(30);                       // 볼륨 20
-}
+  myDFPlayer.volume(30); // VOLUME ( 0 ~ 30 )
 
-instrument instrumentCode = OBOE; // 기본악기는 오보에로
+instrument instrumentCode = OBOE; // Default Instrument is OBOE
 
-
+// Code that calculate distance
 int distanceCalc(int low, int high) {
   return (low <= distance && distance < high);
 }
 
+// playing Function for each button
 void playTune(instrument inst, pitch p, int low, int high) {
   myDFPlayer.loop(inst + p);
   Serial.println(inst + p);
@@ -99,6 +101,7 @@ void playFlatTune(instrument inst, pitch p, int low, int high) {
 
 void loop() { 
 
+  // change Instrument with slide switch
   int inst = !digitalRead(INST_ONE) * 2 + !digitalRead(INST_TWO);
   switch(inst) {
     case 0:
@@ -115,7 +118,7 @@ void loop() {
       break;
   }
 
-    if(!digitalRead(PLAYBUTTON)) // 버튼 누르면
+    if(!digitalRead(PLAYBUTTON)) // LCD
     {
       distance = TOF.readRange();
       lcd.setCursor(0, 0);
@@ -136,7 +139,7 @@ void loop() {
 
       lcd.setCursor(0, 1);
 
-      if(digitalRead(SHARP) && digitalRead(FLAT)) { // 샾 플랫 안누름
+      if(digitalRead(SHARP) && digitalRead(FLAT)) { 
         if(distanceCalc(0, 40)) {
           lcd.print("DO");
           playTune(instrumentCode, DO, 0, 40);
