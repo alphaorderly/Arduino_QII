@@ -33,7 +33,7 @@ other modules you will need is DFPlayer mini, amp Module.
 
 ## THINGS TO UPDATE
 
->  add more instrument 
-> optimize percussion code
-> compatibility for other arduino board
+>  add more instrument        
+> optimize percussion code.    
+> compatibility for other arduino board.    
 
