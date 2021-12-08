@@ -31,6 +31,15 @@ and sort them with DRIVESORT ( fat 32 sorting program )
 
 other modules you will need is DFPlayer mini, amp Module.
 
+## CIRCUIT GUIDE
+
+- All buttons except recording module use built-in pullups   
+
+- Distance sensor should be connected to SDA, SCL on Arduino board   
+
+- MP3 Module should be connected to 10, 11 and need 10k Ohm resistance between them   
+
+
 ## THINGS TO UPDATE
 
 >  add more instrument        
